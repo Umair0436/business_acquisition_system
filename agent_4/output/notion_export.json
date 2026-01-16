@@ -1,0 +1,161 @@
+{
+  "database_title": "Business Acquisition Pipeline",
+  "records": [
+    {
+      "properties": {
+        "Record ID": {
+          "title": [
+            {
+              "text": {
+                "content": "listing_a2bedea3b0d745be"
+              }
+            }
+          ]
+        },
+        "Business": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Property Damage Recovery and Mitigation Business"
+              }
+            }
+          ]
+        },
+        "Broker": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Daniel Cooper"
+              }
+            }
+          ]
+        },
+        "Email": {
+          "email": ""
+        },
+        "Phone": {
+          "phone_number": ""
+        },
+        "Industry": {
+          "select": {
+            "name": "Not Specified"
+          }
+        },
+        "Geography": {
+          "select": {
+            "name": "Nashville , TN"
+          }
+        },
+        "Status": {
+          "select": {
+            "name": "Active"
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "Record ID": {
+          "title": [
+            {
+              "text": {
+                "content": "listing_1704d1aa1f65478e"
+              }
+            }
+          ]
+        },
+        "Business": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "BizQuest Business Listing"
+              }
+            }
+          ]
+        },
+        "Broker": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Not Available"
+              }
+            }
+          ]
+        },
+        "Email": {
+          "email": ""
+        },
+        "Phone": {
+          "phone_number": "=\"+1-470-365-5849\""
+        },
+        "Industry": {
+          "select": {
+            "name": "Not Specified"
+          }
+        },
+        "Geography": {
+          "select": {
+            "name": "Grayson ,  Georgia  (  Gwinnett County )"
+          }
+        },
+        "Status": {
+          "select": {
+            "name": "Active"
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "Record ID": {
+          "title": [
+            {
+              "text": {
+                "content": "listing_d69b4c9e436c48c7"
+              }
+            }
+          ]
+        },
+        "Business": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Upgraded 2nd Gen Restaurant & Bar 2148 Beltline Rd SW\n7,237 SF Vacant Retail Building Online Auction Sale Decatur, AL 35601"
+              }
+            }
+          ]
+        },
+        "Broker": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Keisha Hartshorn"
+              }
+            }
+          ]
+        },
+        "Email": {
+          "email": "customerservice@ten-x.com"
+        },
+        "Phone": {
+          "phone_number": "=\"+1-888-770-7332\""
+        },
+        "Industry": {
+          "select": {
+            "name": "Real Estate"
+          }
+        },
+        "Geography": {
+          "select": {
+            "name": "Decatur, AL"
+          }
+        },
+        "Status": {
+          "select": {
+            "name": "Active"
+          }
+        }
+      }
+    }
+  ]
+}

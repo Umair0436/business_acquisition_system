@@ -1,0 +1,49 @@
+{
+  "records": [
+    {
+      "fields": {
+        "Record ID": "listing_a2bedea3b0d745be",
+        "Business Name": "Property Damage Recovery and Mitigation Business",
+        "Broker Name": "Daniel Cooper",
+        "Email": "",
+        "Phone": "",
+        "Firm": "Independent",
+        "Industry": "Not Specified",
+        "Geography": "Nashville , TN",
+        "Deal Status": "Active",
+        "Asking Price": "249000",
+        "Revenue": "714833"
+      }
+    },
+    {
+      "fields": {
+        "Record ID": "listing_1704d1aa1f65478e",
+        "Business Name": "BizQuest Business Listing",
+        "Broker Name": "Not Available",
+        "Email": "",
+        "Phone": "=\"+1-470-365-5849\"",
+        "Firm": "Independent",
+        "Industry": "Not Specified",
+        "Geography": "Grayson ,  Georgia  (  Gwinnett County )",
+        "Deal Status": "Active",
+        "Asking Price": "450000",
+        "Revenue": "560000"
+      }
+    },
+    {
+      "fields": {
+        "Record ID": "listing_d69b4c9e436c48c7",
+        "Business Name": "Upgraded 2nd Gen Restaurant & Bar 2148 Beltline Rd SW\n7,237 SF Vacant Retail Building Online Auction Sale Decatur, AL 35601",
+        "Broker Name": "Keisha Hartshorn",
+        "Email": "customerservice@ten-x.com",
+        "Phone": "=\"+1-888-770-7332\"",
+        "Firm": "Crunkleton Commercial Real Estate",
+        "Industry": "Real Estate",
+        "Geography": "Decatur, AL",
+        "Deal Status": "Active",
+        "Asking Price": "0",
+        "Revenue": "0"
+      }
+    }
+  ]
+}
