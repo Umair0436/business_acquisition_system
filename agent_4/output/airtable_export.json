@@ -2,21 +2,35 @@
   "records": [
     {
       "fields": {
+<<<<<<< HEAD
         "Record ID": "listing_4be6f6eee7554814",
         "Business Name": "Tree Trimming & Removal and Hedge Care",
         "Broker Name": "Gregory Kovsky",
+=======
+        "Record ID": "listing_a2bedea3b0d745be",
+        "Business Name": "Property Damage Recovery and Mitigation Business",
+        "Broker Name": "Daniel Cooper",
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
         "Email": "",
         "Phone": "",
         "Firm": "Independent",
         "Industry": "Not Specified",
+<<<<<<< HEAD
         "Geography": "King County , WA",
         "Deal Status": "Active",
         "Asking Price": "2000000",
         "Revenue": "1300000"
+=======
+        "Geography": "Nashville , TN",
+        "Deal Status": "Active",
+        "Asking Price": "249000",
+        "Revenue": "714833"
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
       }
     },
     {
       "fields": {
+<<<<<<< HEAD
         "Record ID": "listing_26d595dc509243c8",
         "Business Name": "BizQuest Business Listing",
         "Broker Name": "Not Available",
@@ -28,10 +42,24 @@
         "Deal Status": "Active",
         "Asking Price": "1165000",
         "Revenue": "1100000"
+=======
+        "Record ID": "listing_1704d1aa1f65478e",
+        "Business Name": "BizQuest Business Listing",
+        "Broker Name": "Not Available",
+        "Email": "",
+        "Phone": "=\"+1-470-365-5849\"",
+        "Firm": "Independent",
+        "Industry": "Not Specified",
+        "Geography": "Grayson ,  Georgia  (  Gwinnett County )",
+        "Deal Status": "Active",
+        "Asking Price": "450000",
+        "Revenue": "560000"
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
       }
     },
     {
       "fields": {
+<<<<<<< HEAD
         "Record ID": "listing_189a60d9bd194b40",
         "Business Name": "Medical Office Dev Site | NE Philadelphia 8000 Old York Rd\n0.4 Acres of Commercial Land Online Auction Sale Elkins Park, PA 19027",
         "Broker Name": "Pace Zambito",
@@ -40,6 +68,16 @@
         "Firm": "J.C. BAR Properties, Inc.",
         "Industry": "Real Estate",
         "Geography": "Park, PA",
+=======
+        "Record ID": "listing_d69b4c9e436c48c7",
+        "Business Name": "Upgraded 2nd Gen Restaurant & Bar 2148 Beltline Rd SW\n7,237 SF Vacant Retail Building Online Auction Sale Decatur, AL 35601",
+        "Broker Name": "Keisha Hartshorn",
+        "Email": "customerservice@ten-x.com",
+        "Phone": "=\"+1-888-770-7332\"",
+        "Firm": "Crunkleton Commercial Real Estate",
+        "Industry": "Real Estate",
+        "Geography": "Decatur, AL",
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
         "Deal Status": "Active",
         "Asking Price": "0",
         "Revenue": "0"

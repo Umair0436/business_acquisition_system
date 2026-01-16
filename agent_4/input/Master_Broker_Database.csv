@@ -1,4 +1,10 @@
 ﻿record_id,broker_name,brokerage_firm,email,email_source,phone,geography,industry_focus,linkedin_search_url,source_listing_url,extraction_timestamp
+<<<<<<< HEAD
 broker_856fe843e750495fbfa07374df44eb29,Gregory Kovsky,Independent,,none,,"King County , WA",Not Specified,https://www.linkedin.com/search/results/all/?keywords=Gregory+Kovsky,https://www.bizbuysell.com/business-opportunity/tree-trimming-and-removal-and-hedge-care/2460556/,2026-01-17T03:30:59.276751
 broker_f8a18f49f2724f6eb7d8d068a4d842a1,Not Available,Independent,,none,"=""+1-561-676-1038""","Duval County ,  Florida",Retail Stores Businesses for Sale,,https://www.bizquest.com/business-for-sale/established-full-service-sign-and-graphics-business/BW2460509/,2026-01-17T03:32:19.127183
 broker_4134c3dacb584ebea2c23196c58ea05d,Pace Zambito,"J.C. BAR Properties, Inc.",customerservice@ten-x.com,existing,"=""+1-800-613-1303""","Park, PA",Real Estate,https://www.linkedin.com/search/results/all/?keywords=Pace+Zambito,https://www.loopnet.com/Listing/8000-Old-York-Rd-Elkins-Park-PA/31405328/,2026-01-17T03:33:41.063795
+=======
+broker_bf75d8c6314b423ca27e667d22a09d61,Daniel Cooper,Independent,,none,,"Nashville , TN",Not Specified,https://www.linkedin.com/search/results/all/?keywords=Daniel+Cooper,https://www.bizbuysell.com/business-opportunity/property-damage-recovery-and-mitigation-business/2459304/,2026-01-14T13:42:44.148355
+broker_a737abb1cf2841b2bcb335ea8481070f,Not Available,Independent,,none,"=""+1-470-365-5849""","Grayson ,  Georgia  (  Gwinnett County )",Not Specified,,https://www.bizquest.com/business-for-sale/highly-profitable-and-established-community-coffee-house/BW2459134/,2026-01-14T13:44:01.514557
+broker_863f72e9687540b294e1738201d4a021,Keisha Hartshorn,Crunkleton Commercial Real Estate,customerservice@ten-x.com,existing,"=""+1-888-770-7332""","Decatur, AL",Real Estate,https://www.linkedin.com/search/results/all/?keywords=Keisha+Hartshorn,https://www.loopnet.com/Listing/2148-Beltline-Rd-SW-Decatur-AL/37959140/,2026-01-14T13:45:35.178895
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a

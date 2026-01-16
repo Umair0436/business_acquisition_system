@@ -1,4 +1,5 @@
 "broker_name","broker_firm","broker_email","email_subject","email_body","tone","generation_timestamp"
+<<<<<<< HEAD
 "Pace Zambito","J.C. BAR Properties, Inc.","customerservice@ten-x.com","Introduction: Acquisition Capital Partners & Off-Market Real Estate Opportunities","Dear Mr. Zambito,
 
 My name is John Smith, and I am the Senior Acquisitions Manager at Acquisition Capital Partners. We are a well-capitalized investment firm actively seeking strategic real estate acquisitions across various asset classes. Our focus is on identifying and acquiring high-quality, income-producing, and value-add commercial properties.
@@ -10,10 +11,18 @@ Given J.C. BAR Properties, Inc.'s esteemed reputation and deep local market expe
 I would appreciate the opportunity to schedule a brief call or meeting at your convenience to discuss our acquisition parameters in more detail and explore how we might collaborate on future transactions. Please let me know what time works best for you.
 
 Thank you for your time and consideration.
+=======
+"Keisha Hartshorn","Crunkleton Commercial Real Estate","customerservice@ten-x.com","Off-Market Opportunities - Acquisition Capital Partners","Dear Keisha,
+
+I'm John Smith from Acquisition Capital Partners. We are actively seeking off-market business acquisition opportunities for our clients.
+
+Please forward any relevant off-market listings for our review. I am available to quickly discuss our specific acquisition criteria.
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
 
 Sincerely,
 
 John Smith
+<<<<<<< HEAD
 Senior Acquisitions Manager
 Acquisition Capital Partners","professional","2026-01-17T03:41:18.261788"
 "Gregory Kovsky","Independent","[LOOKUP: Gregory Kovsky @ Independent]","Inquiry: Acquisition Opportunities in King County, WA - Acquisition Capital Partners","Dear Mr. Kovsky,
@@ -52,3 +61,24 @@ John Smith
 Senior Acquisitions Manager
 Acquisition Capital Partners
 </email body>","professional","2026-01-17T03:41:33.973053"
+=======
+Acquisition Capital Partners","direct","2026-01-14T13:47:59.251642"
+"Daniel Cooper","Independent","[LOOKUP: Daniel Cooper @ Independent]","Off-Market Acquisition Opportunities","Hi Daniel,
+
+I'm John Smith from Acquisition Capital Partners. We are actively seeking off-market business acquisition opportunities. Our firm is well-capitalized and ready to move quickly on suitable deals. Please forward any relevant off-market listings you may have. We value your time and look forward to potential collaborations.
+
+Best regards,
+John Smith
+Acquisition Capital Partners
+</email body>","direct","2026-01-14T13:48:05.284687"
+"Not Available","Independent","[LOOKUP: Not Available @ Independent]","Off-Market Deal Flow - Acquisition Capital Partners","<email body>
+Dear Not Available,
+
+I'm John Smith from Acquisition Capital Partners. We are actively seeking off-market acquisition opportunities for our investor group. Please forward any confidential information memorandums (CIMs) or deal summaries for businesses not publicly marketed. We are prepared to move quickly on suitable targets.
+
+Best regards,
+
+John Smith
+Acquisition Capital Partners
+</email body>","direct","2026-01-14T13:48:10.282415"
+>>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
