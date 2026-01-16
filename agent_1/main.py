@@ -4,7 +4,6 @@ from pathlib import Path
 import pandas as pd
 from datetime import datetime
 
-<<<<<<< HEAD
 # ✅ Fix Unicode issue on Windows
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
@@ -12,16 +11,13 @@ sys.stderr.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(Path(__file__).parent))
 
 # ========== SMART INPUT HANDLING ==========
-=======
 sys.path.insert(0, str(Path(__file__).parent))
 
 # ========== INTERACTIVE INPUT ==========
->>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
 print("\n" + "="*50)
 print("⚙️  SCRAPING CONFIGURATION")
 print("="*50)
 
-<<<<<<< HEAD
 # Try to get from config first (dashboard mode), else ask for input
 try:
     from config import NUM_LISTINGS
@@ -37,7 +33,6 @@ except ImportError:
 # ========================================
 
 # Import config and scraper functions
-=======
 # Get user input
 num_listings = input("How many listings per website? [10]: ").strip()
 if num_listings.isdigit():
@@ -48,18 +43,15 @@ else:
 print(f"✓ Will scrape {NUM_LISTINGS} listings from each website")
 # ========================================
 
->>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
 from config import SCRAPING_CONFIG, OUTPUT_CONFIG
 from scrapers.bizbuysell import scrape_bizbuysell
 from scrapers.bizquest import scrape_bizquest
 from scrapers.loopnet import scrape_loopnet
 
-<<<<<<< HEAD
 # Update config with user input dynamically
 for scraper_name, scraper_cfg in SCRAPING_CONFIG.items():
     if isinstance(scraper_cfg, dict):
         scraper_cfg["max_listings"] = NUM_LISTINGS
-=======
 # Update config with user input
 SCRAPING_CONFIG["bizbuysell"]["max_listings"] = NUM_LISTINGS
 SCRAPING_CONFIG["bizquest"]["max_listings"] = NUM_LISTINGS
@@ -174,7 +166,6 @@ def main():
     else:
         print("\n⚠ WARNING: No listings scraped from any source")
         return []
->>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
 
 
 def save_intermediate(listings, source_name):
@@ -185,7 +176,6 @@ def save_intermediate(listings, source_name):
     df = pd.DataFrame(listings)
     output_path = Path(__file__).parent / f"output/{source_name}_listings.csv"
     output_path.parent.mkdir(exist_ok=True)
-<<<<<<< HEAD
     df.to_csv(output_path, index=False, encoding='utf-8')
     print(f"  💾 Intermediate saved: {output_path}")
 
@@ -279,11 +269,9 @@ def main():
         return []
 
 
-=======
     df.to_csv(output_path, index=False)
     print(f"  💾 Intermediate saved: {output_path}")
 
 
->>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
 if __name__ == "__main__":
     main()

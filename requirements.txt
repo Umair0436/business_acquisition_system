@@ -3,3 +3,5 @@ pandas
 numpy
 openai
 requests
+streamlit==1.27.0
+pandas==2.1.0

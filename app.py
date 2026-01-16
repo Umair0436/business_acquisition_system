@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #!/usr/bin/env python3
 """
 Streamlit Dashboard for Business Acquisition Pipeline
@@ -806,7 +805,6 @@ st.markdown("""
     <p style='font-size: 0.9rem;'>Automated listing scraping, broker intelligence & email outreach</p>
 </div>
 """, unsafe_allow_html=True)
-=======
 import streamlit as st
 import pandas as pd
 import subprocess
@@ -1416,4 +1414,3 @@ if st.session_state.pipeline_running and page == "Run Pipeline":
 # Footer
 st.markdown("---")
 st.markdown("**Business Acquisition System** - Integrated Multi-Agent Pipeline for Business Opportunity Analysis")
->>>>>>> 7ba3c8725efb6a2051e9ac9233640be8c397066a
