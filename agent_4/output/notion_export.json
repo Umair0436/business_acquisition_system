@@ -1,0 +1,161 @@
+{
+  "database_title": "Business Acquisition Pipeline",
+  "records": [
+    {
+      "properties": {
+        "Record ID": {
+          "title": [
+            {
+              "text": {
+                "content": "listing_4be6f6eee7554814"
+              }
+            }
+          ]
+        },
+        "Business": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Tree Trimming & Removal and Hedge Care"
+              }
+            }
+          ]
+        },
+        "Broker": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Gregory Kovsky"
+              }
+            }
+          ]
+        },
+        "Email": {
+          "email": ""
+        },
+        "Phone": {
+          "phone_number": ""
+        },
+        "Industry": {
+          "select": {
+            "name": "Not Specified"
+          }
+        },
+        "Geography": {
+          "select": {
+            "name": "King County , WA"
+          }
+        },
+        "Status": {
+          "select": {
+            "name": "Active"
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "Record ID": {
+          "title": [
+            {
+              "text": {
+                "content": "listing_26d595dc509243c8"
+              }
+            }
+          ]
+        },
+        "Business": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "BizQuest Business Listing"
+              }
+            }
+          ]
+        },
+        "Broker": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Not Available"
+              }
+            }
+          ]
+        },
+        "Email": {
+          "email": ""
+        },
+        "Phone": {
+          "phone_number": "=\"+1-561-676-1038\""
+        },
+        "Industry": {
+          "select": {
+            "name": "Retail Stores Businesses for Sale"
+          }
+        },
+        "Geography": {
+          "select": {
+            "name": "Duval County ,  Florida"
+          }
+        },
+        "Status": {
+          "select": {
+            "name": "Active"
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "Record ID": {
+          "title": [
+            {
+              "text": {
+                "content": "listing_189a60d9bd194b40"
+              }
+            }
+          ]
+        },
+        "Business": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Medical Office Dev Site | NE Philadelphia 8000 Old York Rd\n0.4 Acres of Commercial Land Online Auction Sale Elkins Park, PA 19027"
+              }
+            }
+          ]
+        },
+        "Broker": {
+          "rich_text": [
+            {
+              "text": {
+                "content": "Pace Zambito"
+              }
+            }
+          ]
+        },
+        "Email": {
+          "email": "customerservice@ten-x.com"
+        },
+        "Phone": {
+          "phone_number": "=\"+1-800-613-1303\""
+        },
+        "Industry": {
+          "select": {
+            "name": "Real Estate"
+          }
+        },
+        "Geography": {
+          "select": {
+            "name": "Park, PA"
+          }
+        },
+        "Status": {
+          "select": {
+            "name": "Active"
+          }
+        }
+      }
+    }
+  ]
+}
