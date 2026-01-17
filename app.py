@@ -147,14 +147,6 @@ st.markdown("""
     .log-box::-webkit-scrollbar-thumb:hover {
         background: #5a5a5a;
     }
-    
-    .download-section {
-        background-color: #f8f9fa;
-        border: 2px solid #dee2e6;
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-top: 1rem;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -187,19 +179,25 @@ if 'current_agent' not in st.session_state:
 
 def file_exists(path):
     """Check if file exists and has content"""
-    p = Path(path)
-    return p.exists() and p.stat().st_size > 0
+    try:
+        p = Path(path)
+        return p.exists() and p.stat().st_size > 0
+    except:
+        return False
 
 def ensure_directory(path):
     """Ensure directory exists"""
-    Path(path).mkdir(parents=True, exist_ok=True)
+    try:
+        Path(path).mkdir(parents=True, exist_ok=True)
+    except:
+        pass
 
 def save_status():
     """Save current status to a JSON file"""
     status_file = Path("pipeline_status.json")
     status_data = {
         'agent_status': st.session_state.agent_status,
-        'logs': st.session_state.logs[-50:],
+        'logs': st.session_state.logs[-100:],
         'pipeline_running': st.session_state.pipeline_running,
         'pipeline_complete': st.session_state.pipeline_complete,
         'current_agent': st.session_state.current_agent,
@@ -208,8 +206,8 @@ def save_status():
     try:
         with open(status_file, 'w', encoding='utf-8') as f:
             json.dump(status_data, f, indent=2)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Save status error: {e}")
 
 def load_status():
     """Load status from JSON file if exists"""
@@ -218,38 +216,37 @@ def load_status():
         try:
             with open(status_file, 'r', encoding='utf-8') as f:
                 status_data = json.load(f)
-                
-            saved_time = datetime.fromisoformat(status_data['timestamp'])
-            if (datetime.now() - saved_time).seconds < 3600:
-                st.session_state.agent_status = status_data['agent_status']
-                st.session_state.logs = status_data['logs']
-                st.session_state.pipeline_running = status_data['pipeline_running']
-                st.session_state.pipeline_complete = status_data['pipeline_complete']
-                st.session_state.current_agent = status_data['current_agent']
-                return True
-        except Exception:
-            pass
+            
+            st.session_state.agent_status = status_data.get('agent_status', st.session_state.agent_status)
+            st.session_state.logs = status_data.get('logs', [])
+            st.session_state.pipeline_running = status_data.get('pipeline_running', False)
+            st.session_state.pipeline_complete = status_data.get('pipeline_complete', False)
+            st.session_state.current_agent = status_data.get('current_agent', None)
+            return True
+        except Exception as e:
+            print(f"Load status error: {e}")
     return False
 
-def add_log_to_queue(message):
-    """Add log message to queue (thread-safe)"""
+def add_log(message):
+    """Add log message (thread-safe)"""
     timestamp = datetime.now().strftime("%H:%M:%S")
     log_entry = f"[{timestamp}] {message}"
     log_queue.put(log_entry)
     print(log_entry)
 
 def process_log_queue():
-    """Process all queued log messages"""
+    """Process queued logs into session state"""
     while not log_queue.empty():
         try:
             log_entry = log_queue.get_nowait()
+            if 'logs' not in st.session_state:
+                st.session_state.logs = []
             st.session_state.logs.append(log_entry)
         except queue.Empty:
             break
-    save_status()
 
-def update_status_file(agent, status):
-    """Update status file directly (thread-safe)"""
+def update_agent_status(agent, status):
+    """Update agent status (thread-safe via file)"""
     status_file = Path("pipeline_status.json")
     try:
         if status_file.exists():
@@ -270,195 +267,183 @@ def update_status_file(agent, status):
             }
         
         status_data['agent_status'][agent] = status
+        status_data['current_agent'] = agent if status == 'processing' else None
         status_data['timestamp'] = datetime.now().isoformat()
         
         with open(status_file, 'w', encoding='utf-8') as f:
             json.dump(status_data, f, indent=2)
-    except Exception:
-        pass
-
-def transfer_file(src, dest):
-    """Transfer file from source to destination"""
-    try:
-        if file_exists(src):
-            ensure_directory(Path(dest).parent)
-            shutil.copy2(src, dest)
-            add_log_to_queue(f"✅ Transferred: {Path(src).name} → {Path(dest).parent.name}")
-            return True
-        else:
-            add_log_to_queue(f"⚠️ File not found: {src}")
-            return False
     except Exception as e:
-        add_log_to_queue(f"❌ Transfer error: {str(e)[:100]}")
-        return False
+        print(f"Update status error: {e}")
 
-def run_agent_direct(agent_name, agent_dir):
-    """Run agent using subprocess.run"""
-    try:
-        update_status_file(agent_name, 'processing')
-        add_log_to_queue(f"🚀 Starting {agent_name.upper()}...")
-        
-        agent_path = Path(agent_dir)
-        if not agent_path.exists():
-            add_log_to_queue(f"❌ Directory not found: {agent_dir}")
-            update_status_file(agent_name, 'failed')
-            return False
-        
-        main_file = agent_path / "main.py"
-        if not main_file.exists():
-            add_log_to_queue(f"❌ main.py not found in {agent_dir}")
-            update_status_file(agent_name, 'failed')
-            return False
-        
-        add_log_to_queue(f"📂 Executing: {main_file}")
-        add_log_to_queue(f"⏳ Please wait (this may take several minutes)...")
-        
-        result = subprocess.run(
-            [sys.executable, "main.py"],
-            cwd=str(agent_path),
-            capture_output=True,
-            text=True,
-            encoding='utf-8',
-            errors='replace',
-            timeout=900
-        )
-        
-        if result.returncode == 0:
-            add_log_to_queue(f"✅ {agent_name.upper()} completed successfully")
-            update_status_file(agent_name, 'completed')
-            return True
-        else:
-            add_log_to_queue(f"❌ {agent_name.upper()} failed with return code {result.returncode}")
-            
-            if result.stderr:
-                error_lines = result.stderr.strip().split('\n')[-5:]
-                for line in error_lines:
-                    if line.strip():
-                        add_log_to_queue(f"   {line[:100]}")
-            
-            update_status_file(agent_name, 'failed')
-            return False
-            
-    except subprocess.TimeoutExpired:
-        add_log_to_queue(f"❌ {agent_name.upper()} timeout after 15 minutes")
-        update_status_file(agent_name, 'failed')
-        return False
-    except Exception as e:
-        add_log_to_queue(f"❌ {agent_name.upper()} exception: {str(e)[:200]}")
-        update_status_file(agent_name, 'failed')
-        return False
+def parse_pipeline_output(line):
+    """Parse run_pipeline.py output and update status"""
+    line = line.strip()
+    
+    # Agent started
+    if "STARTING AGENT 1" in line:
+        update_agent_status('agent_1', 'processing')
+        add_log("🚀 Agent 1: Listing Scraper started")
+    elif "STARTING AGENT 2" in line:
+        update_agent_status('agent_1', 'completed')
+        update_agent_status('agent_2', 'processing')
+        add_log("🚀 Agent 2: Broker Intelligence started")
+    elif "STARTING AGENT 3" in line:
+        update_agent_status('agent_2', 'completed')
+        update_agent_status('agent_3', 'processing')
+        add_log("🚀 Agent 3: Email Outreach started")
+    elif "STARTING AGENT 4" in line or "DATA CATALOG" in line:
+        update_agent_status('agent_3', 'completed')
+        update_agent_status('agent_4', 'processing')
+        add_log("🚀 Agent 4: Data Catalog started")
+    
+    # Agent completed
+    elif "Agent 1 completed" in line:
+        update_agent_status('agent_1', 'completed')
+        add_log("✅ Agent 1 completed")
+    elif "Agent 2 completed" in line:
+        update_agent_status('agent_2', 'completed')
+        add_log("✅ Agent 2 completed")
+    elif "Agent 3 completed" in line:
+        update_agent_status('agent_3', 'completed')
+        add_log("✅ Agent 3 completed")
+    elif "Agent 4 Completed" in line:
+        update_agent_status('agent_4', 'completed')
+        add_log("✅ Agent 4 completed")
+    
+    # Pipeline complete
+    elif "PIPELINE COMPLETE" in line:
+        st.session_state.pipeline_complete = True
+        st.session_state.pipeline_running = False
+        add_log("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+        save_status()
+    
+    # Errors
+    elif "FAILED" in line or "ERROR" in line or "❌" in line:
+        add_log(f"❌ {line}")
+    
+    # Other important messages
+    elif any(word in line for word in ["STAGE", "TRANSFER", "VERIFY", "✓", "⚠"]):
+        add_log(f"   {line[:150]}")
 
 def run_pipeline_background(max_listings, email_tone):
-    """Run the complete pipeline in background thread"""
+    """Run the pipeline using run_pipeline.py"""
     try:
-        add_log_to_queue("=" * 50)
-        add_log_to_queue("🚀 PIPELINE STARTED")
-        add_log_to_queue(f"📊 Settings: {max_listings} listings, {email_tone} tone")
-        add_log_to_queue("=" * 50)
+        add_log("=" * 50)
+        add_log("🚀 PIPELINE STARTED")
+        add_log(f"📊 Settings: {max_listings} listings, {email_tone} tone")
+        add_log("=" * 50)
         
-        add_log_to_queue("⚙️ Creating configuration files...")
+        # Create config files
+        add_log("⚙️ Creating configuration files...")
         
+        # Agent 1 Config
         ensure_directory("agent_1")
+        config_content = f"""# Agent 1 Configuration
+MAX_LISTINGS = {max_listings}
+NUM_LISTINGS = {max_listings}
+HEADLESS_MODE = False
+TIMEOUT = 30
+RETRY_ATTEMPTS = 3
+
+SCRAPING_CONFIG = {{
+    'bizbuysell': {{
+        'max_listings': {max_listings},
+        'max_pages': 10,
+        'url': 'https://www.bizbuysell.com/businesses-for-sale/',
+        'enabled': True
+    }},
+    'bizquest': {{
+        'max_listings': {max_listings},
+        'max_pages': 10,
+        'url': 'https://www.bizquest.com/businesses-for-sale/',
+        'enabled': True
+    }},
+    'loopnet': {{
+        'max_listings': {max_listings},
+        'max_pages': 10,
+        'url': 'https://www.loopnet.com/search/businesses-for-sale/',
+        'enabled': True
+    }}
+}}
+
+OUTPUT_CONFIG = {{
+    'output_file': 'output/listings.csv',
+    'save_intermediate': True,
+    'format': 'csv'
+}}
+"""
         with open("agent_1/config.py", "w", encoding='utf-8') as f:
-            f.write("# Agent 1 Configuration File\n")
-            f.write("# Auto-generated by Dashboard\n\n")
-            f.write("SCRAPING_CONFIG = {\n")
-            f.write("    'bizbuysell': {\n")
-            f.write(f"        'max_listings': {max_listings},\n")
-            f.write("        'max_pages': 10,\n")
-            f.write("        'url': 'https://www.bizbuysell.com/businesses-for-sale/',\n")
-            f.write("        'enabled': True\n")
-            f.write("    },\n")
-            f.write("    'bizquest': {\n")
-            f.write(f"        'max_listings': {max_listings},\n")
-            f.write("        'max_pages': 10,\n")
-            f.write("        'url': 'https://www.bizquest.com/businesses-for-sale/',\n")
-            f.write("        'enabled': True\n")
-            f.write("    },\n")
-            f.write("    'loopnet': {\n")
-            f.write(f"        'max_listings': {max_listings},\n")
-            f.write("        'max_pages': 10,\n")
-            f.write("        'url': 'https://www.loopnet.com/search/businesses-for-sale/',\n")
-            f.write("        'enabled': True\n")
-            f.write("    }\n")
-            f.write("}\n\n")
-            f.write("OUTPUT_CONFIG = {\n")
-            f.write("    'output_file': 'output/listings.csv',\n")
-            f.write("    'save_intermediate': True,\n")
-            f.write("    'format': 'csv'\n")
-            f.write("}\n\n")
-            f.write(f"NUM_LISTINGS = {max_listings}\n")
-            f.write(f"MAX_LISTINGS = {max_listings}\n")
-            f.write("HEADLESS_MODE = False\n")
-            f.write("TIMEOUT = 30\n")
-            f.write("RETRY_ATTEMPTS = 3\n")
-        add_log_to_queue("✅ Agent 1 config created")
+            f.write(config_content)
+        add_log("✅ Agent 1 config created")
         
+        # Agent 3 Config
         ensure_directory("agent_3")
         with open("agent_3/config.py", "w", encoding='utf-8') as f:
-            f.write("# Agent 3 Configuration File\n")
-            f.write("# Auto-generated by Dashboard\n\n")
-            f.write("EMAIL_CONFIG = {\n")
-            f.write(f"    'tone': '{email_tone.lower()}',\n")
-            f.write("    'max_emails': 100\n")
-            f.write("}\n\n")
             f.write(f"EMAIL_TONE = '{email_tone.lower()}'\n")
-        add_log_to_queue("✅ Agent 3 config created")
+            f.write(f"EMAIL_CONFIG = {{'tone': '{email_tone.lower()}', 'max_emails': 100}}\n")
+        add_log("✅ Agent 3 config created")
         
+        # Create directories
         for i in range(1, 5):
             ensure_directory(f"agent_{i}/output")
             ensure_directory(f"agent_{i}/input")
-        add_log_to_queue("✅ All directories created")
-        add_log_to_queue("")
+        add_log("✅ All directories created")
+        add_log("")
         
-        add_log_to_queue("📍 STAGE 1/4: Listing Scraper")
-        if run_agent_direct('agent_1', 'agent_1'):
-            if not file_exists("agent_1/output/listings.csv"):
-                add_log_to_queue("❌ Agent 1 did not produce listings.csv")
-                return
-            
-            add_log_to_queue("")
-            add_log_to_queue("📍 STAGE 2/4: Broker Intelligence")
-            transfer_file("agent_1/output/listings.csv", "agent_2/input/listings.csv")
-            
-            if run_agent_direct('agent_2', 'agent_2'):
-                if not file_exists("agent_2/output/Master_Broker_Database.csv"):
-                    add_log_to_queue("❌ Agent 2 did not produce Master_Broker_Database.csv")
-                    return
-                
-                add_log_to_queue("")
-                add_log_to_queue("📍 STAGE 3/4: Email Outreach")
-                transfer_file("agent_2/output/Master_Broker_Database.csv", 
-                             "agent_3/input/Master_Broker_Database.csv")
-                
-                if run_agent_direct('agent_3', 'agent_3'):
-                    if not file_exists("agent_3/output/email_drafts.csv"):
-                        add_log_to_queue("❌ Agent 3 did not produce email_drafts.csv")
-                        return
-                    
-                    add_log_to_queue("")
-                    add_log_to_queue("📍 STAGE 4/4: Data Catalog")
-                    transfer_file("agent_1/output/listings.csv", "agent_4/input/listings.csv")
-                    transfer_file("agent_2/output/Master_Broker_Database.csv", 
-                                 "agent_4/input/Master_Broker_Database.csv")
-                    transfer_file("agent_3/output/email_drafts.csv", 
-                                 "agent_4/input/email_drafts.csv")
-                    
-                    if run_agent_direct('agent_4', 'agent_4'):
-                        add_log_to_queue("")
-                        add_log_to_queue("=" * 50)
-                        add_log_to_queue("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
-                        add_log_to_queue("=" * 50)
-                        
-                        status_file = Path("pipeline_status.json")
-                        if status_file.exists():
-                            with open(status_file, 'r', encoding='utf-8') as f:
-                                status_data = json.load(f)
-                            status_data['pipeline_complete'] = True
-                            status_data['pipeline_running'] = False
-                            with open(status_file, 'w', encoding='utf-8') as f:
-                                json.dump(status_data, f, indent=2)
+        # Run the pipeline using run_pipeline.py
+        add_log("🚀 Executing run_pipeline.py...")
         
+        process = subprocess.Popen(
+            [sys.executable, "run_pipeline.py"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            bufsize=1,
+            universal_newlines=True
+        )
+        
+        # Read output in real-time
+        while True:
+            line = process.stdout.readline()
+            if not line and process.poll() is not None:
+                break
+            
+            if line:
+                parse_pipeline_output(line)
+        
+        return_code = process.wait()
+        
+        if return_code == 0:
+            add_log("=" * 50)
+            add_log("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+            add_log("=" * 50)
+            
+            # Update status file
+            status_file = Path("pipeline_status.json")
+            if status_file.exists():
+                with open(status_file, 'r', encoding='utf-8') as f:
+                    status_data = json.load(f)
+                status_data['pipeline_complete'] = True
+                status_data['pipeline_running'] = False
+                with open(status_file, 'w', encoding='utf-8') as f:
+                    json.dump(status_data, f, indent=2)
+        else:
+            add_log(f"❌ Pipeline failed with return code {return_code}")
+            # Mark any processing agent as failed
+            status_file = Path("pipeline_status.json")
+            if status_file.exists():
+                with open(status_file, 'r', encoding='utf-8') as f:
+                    status_data = json.load(f)
+                for agent, status in status_data.get('agent_status', {}).items():
+                    if status == 'processing':
+                        status_data['agent_status'][agent] = 'failed'
+                status_data['pipeline_running'] = False
+                with open(status_file, 'w', encoding='utf-8') as f:
+                    json.dump(status_data, f, indent=2)
+        
+        # Mark pipeline as not running
         status_file = Path("pipeline_status.json")
         if status_file.exists():
             with open(status_file, 'r', encoding='utf-8') as f:
@@ -468,7 +453,18 @@ def run_pipeline_background(max_listings, email_tone):
                 json.dump(status_data, f, indent=2)
         
     except Exception as e:
-        add_log_to_queue(f"❌ Pipeline error: {str(e)}")
+        add_log(f"❌ Pipeline error: {str(e)}")
+        # Mark as not running
+        try:
+            status_file = Path("pipeline_status.json")
+            if status_file.exists():
+                with open(status_file, 'r', encoding='utf-8') as f:
+                    status_data = json.load(f)
+                status_data['pipeline_running'] = False
+                with open(status_file, 'w', encoding='utf-8') as f:
+                    json.dump(status_data, f, indent=2)
+        except:
+            pass
 
 # ============================================
 # SIDEBAR
@@ -481,14 +477,16 @@ max_listings = st.sidebar.number_input(
     min_value=1,
     max_value=10000,
     value=20,
-    step=1
+    step=1,
+    help="Number of listings to scrape from each website"
 )
 
 st.sidebar.markdown("### 📧 Email Tone")
 email_tone = st.sidebar.selectbox(
     "Select outreach tone:",
     ["Professional", "Relationship-Based", "Direct"],
-    index=0
+    index=0,
+    help="Choose the tone for email generation"
 )
 
 st.sidebar.markdown("---")
@@ -519,20 +517,27 @@ if st.sidebar.button("🔄 RESET", use_container_width=True):
 if st.session_state.pipeline_running:
     st.sidebar.markdown("---")
     st.sidebar.markdown("### ⚡ Status")
-    current = st.session_state.current_agent or 'Processing...'
-    st.sidebar.warning(f"🔄 Running: {current}")
+    
+    current_agent = None
+    for agent, status in st.session_state.agent_status.items():
+        if status == 'processing':
+            current_agent = agent
+            break
+    
+    if current_agent:
+        st.sidebar.warning(f"🔄 Running: {current_agent.upper()}")
+    else:
+        st.sidebar.info("🔄 Pipeline active...")
 
 # ============================================
 # MAIN DASHBOARD
 # ============================================
 
 load_status()
-process_log_queue()
 
 st.markdown('<div class="main-header">🏢 Business Acquisition Pipeline</div>', unsafe_allow_html=True)
 st.markdown("---")
 
-# Three columns: Agents (left), Logs (middle), Downloads (right)
 col1, col2, col3 = st.columns([2, 1.5, 1.5])
 
 # ============================================
@@ -611,10 +616,10 @@ with col2:
     st.markdown("### 📋 Activity Log")
     
     if st.session_state.logs:
-        log_text = "\n".join(st.session_state.logs[-25:])
+        log_text = "\n".join(st.session_state.logs[-30:])
         st.markdown(f'<div class="log-box"><pre>{log_text}</pre></div>', unsafe_allow_html=True)
         
-        if st.button("🗑️ Clear", use_container_width=True, key="clear_logs"):
+        if st.button("🗑️ Clear Logs", use_container_width=True, key="clear_logs"):
             st.session_state.logs = []
             save_status()
             st.rerun()
@@ -622,8 +627,8 @@ with col2:
         st.markdown("""
         <div style='background-color: #e8f4f8; border: 2px solid #b3d9e6; border-radius: 8px; 
                     padding: 1.5rem; text-align: center; color: #2c5f7a;'>
-            <strong>📋 No activity</strong><br>
-            <span style='font-size: 0.9rem;'>Start pipeline</span>
+            <strong>📋 No activity yet</strong><br>
+            <span style='font-size: 0.9rem;'>Click "START PIPELINE" to begin</span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -634,7 +639,6 @@ with col2:
 with col3:
     st.markdown("### 📥 Download Files")
     
-    # Listings
     if file_exists("agent_1/output/listings.csv"):
         with open("agent_1/output/listings.csv", "rb") as f:
             st.download_button(
@@ -648,7 +652,6 @@ with col3:
     else:
         st.button("📄 Listings", disabled=True, use_container_width=True, key="dl_listings_disabled")
     
-    # Brokers
     if file_exists("agent_2/output/Master_Broker_Database.csv"):
         with open("agent_2/output/Master_Broker_Database.csv", "rb") as f:
             st.download_button(
@@ -662,7 +665,6 @@ with col3:
     else:
         st.button("👔 Brokers", disabled=True, use_container_width=True, key="dl_brokers_disabled")
     
-    # Emails
     if file_exists("agent_3/output/email_drafts.csv"):
         with open("agent_3/output/email_drafts.csv", "rb") as f:
             st.download_button(
@@ -676,7 +678,6 @@ with col3:
     else:
         st.button("✉️ Emails", disabled=True, use_container_width=True, key="dl_emails_disabled")
     
-    # Catalog
     if file_exists("agent_4/output/final_catalog.csv"):
         with open("agent_4/output/final_catalog.csv", "rb") as f:
             st.download_button(
@@ -697,7 +698,7 @@ with col3:
 if st.session_state.pipeline_complete:
     st.markdown("""
     <div class="success-banner">
-        🎉 Pipeline Complete! 🎉
+        🎉 Pipeline Complete! All files are ready for download 🎉
     </div>
     """, unsafe_allow_html=True)
 
@@ -709,6 +710,17 @@ if start_button:
     st.session_state.pipeline_running = True
     st.session_state.pipeline_complete = False
     
+    # Reset all agent statuses
+    st.session_state.agent_status = {
+        'agent_1': 'pending',
+        'agent_2': 'pending',
+        'agent_3': 'pending',
+        'agent_4': 'pending'
+    }
+    st.session_state.logs = []
+    save_status()
+    
+    # Start pipeline in background thread
     pipeline_thread = threading.Thread(
         target=run_pipeline_background,
         args=(max_listings, email_tone),
@@ -717,10 +729,9 @@ if start_button:
     pipeline_thread.start()
     st.rerun()
 
+# Auto-refresh when pipeline is running
 if st.session_state.pipeline_running:
-    time.sleep(1)
-    load_status()
-    process_log_queue()
+    time.sleep(2)
     st.rerun()
 
 # ============================================
@@ -731,5 +742,6 @@ st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666; padding: 1rem;'>
     <p>🏢 Business Acquisition Multi-Agent System</p>
+    <p style='font-size: 0.85rem;'>Powered by run_pipeline.py</p>
 </div>
 """, unsafe_allow_html=True)

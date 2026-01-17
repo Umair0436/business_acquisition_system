@@ -1,6 +1,6 @@
 {
   "agent_status": {
-    "agent_1": "pending",
+    "agent_1": "failed",
     "agent_2": "pending",
     "agent_3": "pending",
     "agent_4": "pending"
@@ -9,5 +9,5 @@
   "pipeline_running": false,
   "pipeline_complete": false,
   "current_agent": null,
-  "timestamp": "2026-01-17T14:27:52.978420"
+  "timestamp": "2026-01-17T15:15:54.227857"
 }
